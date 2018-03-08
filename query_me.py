@@ -1,4 +1,4 @@
-from create_model import Modeller
+from libraries.create_model import Modeller
 
 def query_me():
     """Query the most recently saved model.
