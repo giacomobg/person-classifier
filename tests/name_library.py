@@ -1,11 +1,20 @@
+"""Test a system that searches for first names at the start of a string
+and surnames at the end of a string in order to decide whether it is a person.
+"""
+# add parent directory to sys.path
+import os
+import sys
+dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.split(os.path.abspath(dir_path))[0])
+
 import traceback, requests, time
 import pandas as pd
 from create_model import Modeller
 
 def name_library():
-    """Use a library of US surnames at
+    """Use a library of US surnames from
     http://www2.census.gov/topics/genealogy/2000surnames/names.zip
-    and UK first names at
+    and UK first names from
     https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/birthsdeathsandmarriages/livebirths/datasets/babynamesenglandandwalesbabynamesstatisticsboys/2016/adhocallbabynames1996to2016.xls
     to check if entries in entities.db are people.
     """
