@@ -48,7 +48,7 @@ class Modeller():
 
     def get_wiki_data(self,limit=1000):
         """ Get data from entities.db """
-        self.db = sqlite3.connect('entities.db')
+        self.db = sqlite3.connect('data/entities.db')
         self.cursor = self.db.cursor()
         print('Retrieving data from db')
         start_time_db = time.time()

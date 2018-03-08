@@ -9,7 +9,7 @@ class Process():
         
     def connect_to_db(self):
         """ Connect to sqlite3 db and remove existing rows"""
-        self.db = sqlite3.connect('entities.db')
+        self.db = sqlite3.connect('libraries/data/entities.db')
         # Remove existing rows from db
         self.cursor = self.db.cursor()
         # delete table if it exists
