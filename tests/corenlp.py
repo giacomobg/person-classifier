@@ -1,3 +1,10 @@
+"""Test CoreNLP's NER on entities and persons in my database."""
+# add parent directory to sys.path
+import os
+import sys
+dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.split(os.path.abspath(dir_path))[0])
+
 import traceback, requests,time
 from create_model import Modeller
 
