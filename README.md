@@ -67,7 +67,7 @@ http://www2.census.gov/topics/genealogy/2000surnames/names.zip
 |           |My model  |CoreNLP  |Name libraries|
 |-----------|----------|---------|--------------|
 |Precision  |**0.81**  |0.67     |0.63          |
-|Recall     |**0.83**  |0.97     |0.78          |
+|Recall     |  0.83    |**0.97** |0.78          |
 |F1         |**0.82**  |0.79     |0.70          |
 
 
