@@ -9,19 +9,17 @@ sys.path.insert(0, os.path.split(os.path.abspath(dir_path))[0])
 
 import traceback, requests, time
 import pandas as pd
-from create_model import Modeller
+from libraries.create_model import Modeller
 
-def name_library():
+def name_library(limit):
     """Use a library of US surnames from
     http://www2.census.gov/topics/genealogy/2000surnames/names.zip
     and UK first names from
     https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/birthsdeathsandmarriages/livebirths/datasets/babynamesenglandandwalesbabynamesstatisticsboys/2016/adhocallbabynames1996to2016.xls
     to check if entries in entities.db are people.
     """
-    # limit should be the int of sentences to extract from database or 'all' to extract all
-    limit='all'
-    modeller = Modeller()
-    modeller.get_wiki_data(limit=limit)
+    modeller = Modeller(limit=limit)
+    modeller.get_wiki_data()
     strings,y_vals = zip(*modeller.data)
     print('Total strings:',len(y_vals))
     print('People:',sum(y_vals))
@@ -34,10 +32,10 @@ def name_library():
 
     print('\nChecking if strings are people')
     start_time = time.time()
-    with open('data/app_c.csv') as csv_file:
+    with open('libraries/data/app_c.csv') as csv_file:
         df = pd.read_csv(csv_file)
     surnames = df.name.unique()
-    with open('data/first_names_uk.csv') as csv_file:
+    with open('libraries/data/first_names_uk.csv') as csv_file:
         df = pd.read_csv(csv_file,header=None,names=['name'])
     firstnames = df.name.unique()
 
@@ -72,4 +70,6 @@ def name_library():
     # compute precision, recall, f1_score
 
 if __name__ == '__main__':
-    name_library()
+    # limit is number of entries to retrieve from database.
+    # either an int or 'all' to retrieve all.
+    name_library(limit='all')

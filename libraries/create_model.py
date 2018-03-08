@@ -35,24 +35,24 @@ class Modeller():
         self.num_numerical_features = len(self.feature_names)
 
         # open surname file
-        with open('data/app_c.csv') as csv_file:
+        with open('libraries/data/app_c.csv') as csv_file:
             self.surnames = pd.read_csv(csv_file)
         self.surnames = self.surnames[['name','count']]
         self.surname_list = self.surnames.name.unique()
         # open first name file
-        with open('data/first_names_uk.csv') as csv_file:
+        with open('libraries/data/first_names_uk.csv') as csv_file:
             self.firstnames = pd.read_csv(csv_file)
         self.firstnames = self.firstnames[['name','count']]
         self.firstname_list = self.firstnames.name.unique()
         self.limit = limit
 
-    def get_wiki_data(self,limit=1000):
+    def get_wiki_data(self):
         """ Get data from entities.db """
-        self.db = sqlite3.connect('data/entities.db')
+        self.db = sqlite3.connect('libraries/data/entities.db')
         self.cursor = self.db.cursor()
         print('Retrieving data from db')
         start_time_db = time.time()
-        if limit == 'all':
+        if self.limit == 'all':
             self.cursor.execute("SELECT * FROM entities;") # limit reduces size of dataset for prototyping
         else:
             self.limit = (self.limit,)
@@ -150,7 +150,7 @@ class Modeller():
         self.clf.fit(self.x_train,self.y_train)
         print('Trained model in',round(time.time() - start_time_training),'seconds')
         # print(np.round(self.clf.coef_,1))
-        print(self.clf.feature_importances_)
+        print('\nFeature importance:\n'self.clf.feature_importances_)
 
     def model_evaluation(self):
         """ Use test dataset to test model"""
@@ -160,7 +160,7 @@ class Modeller():
         print('Person recall:   ',round(sklearn.metrics.recall_score(self.y_test,y_pred),2))
 
     def pickle_model(self):
-        with open('obj/model.pkl','wb') as out:
+        with open('libraries/obj/model.pkl','wb') as out:
             pickle.dump(self.clf,out)
         print('Model pickled.')
 
@@ -169,7 +169,7 @@ class Modeller():
         """~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         ~~~~~~~~~~~~~~~~~~MAIN FUNCTION~~~~~~~~~~~~~~~~~~~~
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"""
-        self.get_wiki_data(limit=self.limit)
+        self.get_wiki_data()
         self.x_train = self.feature_extraction(self.str_train)
         self.x_test = self.feature_extraction(self.str_test)
         self.create_model()
@@ -179,7 +179,7 @@ class Modeller():
 
     def load_model(self):
         """Unpickle existing ML model."""
-        with open('obj/model.pkl','rb') as file:
+        with open('libraries/obj/model.pkl','rb') as file:
             self.loaded_clf = pickle.load(file)
         print('Model loaded.')
 

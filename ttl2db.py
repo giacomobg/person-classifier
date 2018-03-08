@@ -1,14 +1,16 @@
 import rdflib
-from rdflib.namespace import FOAF
 import sqlite3,time,re
 
-class Process():
-    """docstring for Process"""
-    def __init__(self):
-        super(Process, self).__init__()
+class Turtle2Db():
+    """Convert .ttl file found at
+    http://downloads.dbpedia.org/2016-10/core-i18n/en/instance_types_transitive_en.ttl.bz2
+    to an sqlite3 database with two columns:
+    name (text) and person (boolean)
+    e.g. Abraham Lincoln | 1
+    """
         
     def connect_to_db(self):
-        """ Connect to sqlite3 db and remove existing rows"""
+        """ Connect to sqlite3 db and remove any already existing rows"""
         self.db = sqlite3.connect('libraries/data/entities.db')
         # Remove existing rows from db
         self.cursor = self.db.cursor()
@@ -75,15 +77,14 @@ class Process():
                     entity['person'] = 0
 
                 try:
-                    # TODO: what about names with sports teams in?
                     name = g.compute_qname(uri=triple[0])[2]
                 except:
                     # Exception caught if URI contains a bracket or other disallowed char e.g. http://dbpedia.org/resource/Honorius_(emperor)
                     continue
-                    tmp = True
-                if tmp:
-                    print(tmp)
-                # ignore empty strings
+                #     tmp = True
+                # if tmp:
+                #     print(tmp)
+
                 # Replace underscores with spaces
                 name = name.replace('_',' ')
                 # remove '  1' from end of name if present
@@ -91,8 +92,8 @@ class Process():
                 if pattern.match(name[-3:]):
                     name = name[:-3]
                 if name == '':
-                    print(triple)
-                    print(g.compute_qname(uri=triple[0])[2])
+                    # print(triple)
+                    # print(g.compute_qname(uri=triple[0])[2])
                     continue
                 if name[0] == ' ':
                     name = name[1:]
@@ -100,13 +101,16 @@ class Process():
                 return entity
 
     def remove_duplicates_db(self):
-        # Remove duplicates from the database.
+        """ Remove duplicates from the database.
+        If an entity is in the database twice, as both a person and not a person,
+        remove the entry where it is not a person.
+        """
         print('Removing duplicates')
         start_time_dupl = time.time()
         self.cursor.execute('''DELETE FROM entities
                                 WHERE rowid NOT IN
                                 (SELECT min(rowid) FROM entities GROUP BY name,person)''')
-        # If a person is in the database twice as both a person and not a person, remove entry where it is not a person.
+
         self.cursor.execute('''DELETE FROM entities
                                 WHERE person = 0
                                 AND name IN
@@ -122,5 +126,5 @@ class Process():
 
 
 if __name__ == "__main__":
-    process = Process()
-    process.wrapper()
+    ttl2db = Turtle2Db()
+    ttl2db.wrapper()

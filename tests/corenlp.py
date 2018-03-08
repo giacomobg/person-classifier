@@ -27,12 +27,11 @@ def stanford_ner(string):
     string = string.decode(encoding='utf-8')
     return ner
 
-def corenlp():
+def corenlp(limit):
     """Test corenlp's ner against the database"""
     # limit should be the int of sentences to extract from database or 'all' to extract all
-    limit='all'
-    modeller = Modeller()
-    modeller.get_wiki_data(limit=limit)
+    modeller = Modeller(limit=limit)
+    modeller.get_wiki_data()
     strings,y_vals = zip(*modeller.data)
     print('Total strings:',len(y_vals))
     print('People:',sum(y_vals))
@@ -74,4 +73,6 @@ def corenlp():
     # compute precision, recall, f1_score
 
 if __name__ == '__main__':
-	corenlp()
+    # limit is number of entries to retrieve from database.
+    # either an int or 'all' to retrieve all.
+	corenlp(limit='all')
